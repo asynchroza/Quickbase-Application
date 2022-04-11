@@ -12,4 +12,4 @@
 <p> <strong> NB! </strong> If Maven throws errors when trying to build or test, please, <strong>change the version of your Java to 17</strong> and <strong>update Maven to 3.8.3 </strong></p>
 <p> Essentially, the easiest way to run the tests would be by using IntelliJ and the Lifecycle tasks found in the Maven option menu</p>
 <hr/>
-<p> If you have any inquries feel free to email me! </p>
+<p><strong> If you have any inquries feel free to email me! </strong></p>
