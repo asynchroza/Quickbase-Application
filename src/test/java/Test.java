@@ -18,7 +18,7 @@ public class Test {
         String actualMessage = exception.getMessage();
         assertEquals(expectedMessage, actualMessage);
     }
-
+    @org.junit.jupiter.api.Test
     public void checkInvalidFreshdeskToken(){
         Exception exception = assertThrows(Exception.class, ()-> {
             Map<String, String> map = new HashMap<>();
@@ -26,16 +26,6 @@ public class Test {
             App.postFreshdeskInfo(null, map);
         });
         String expectedMessage = "Unprovided token";
-        String actualMessage = exception.getMessage();
-        assertEquals(expectedMessage, actualMessage);
-    }
-
-    public void providedDataDictionary(){
-        Exception exception = assertThrows(Exception.class, ()->{
-            Map<String, String> map = new HashMap<>();
-            App.postFreshdeskInfo("workingfreshdesk", map);
-        });
-        String expectedMessage = "At least an email, phone number ot twitter should be provided";
         String actualMessage = exception.getMessage();
         assertEquals(expectedMessage, actualMessage);
     }
