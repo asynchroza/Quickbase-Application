@@ -9,4 +9,4 @@
 <p> <strong> NB! </strong> If Maven throws errors when trying to build or test, please, change the version of your Java to 17 and update Maven to 3.8.3 </p>
 <p> Essentially, the easiest way to work around with this program would be by using IntelliJ and the Lifecycle tasks found in the Maven option menu</p>
 <hr/>
-<p> If you have any specific questions or problems you have encountered with running the program, please feel free to email me and I will try to respond as quickly as possible </p>
+<p> If you have any specific questions feel free to email </p>
