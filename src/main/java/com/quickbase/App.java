@@ -35,7 +35,7 @@ public class App {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString()); // send the request synchronously
         int response_code = response.statusCode();
         if(response_code>500) throw new Exception("Unable to reach GITHUB Servers");
-        else if(response_code>299)throw new Exception("Invalid token"); // throw exception if sent information is incorrect
+        else if(response_code>299)throw new Exception("Invalid or unprovided token"); // throw exception if sent information is incorrect
 
 
         JSONObject jsonObject = (JSONObject) new JSONParser().parse(response.body()); // parses response as JSON Object
@@ -61,6 +61,8 @@ public class App {
     }
 
     public static void postFreshdeskInfo(String FRESHDESK_TOKEN, Map<String, String> dictionary) throws Exception {
+
+        if(FRESHDESK_TOKEN == null) throw new Exception("Unprovided token");
 
         StringBuffer http_encode = new StringBuffer("https://"); // get subdomain
         Scanner scanner = new Scanner(System.in);
