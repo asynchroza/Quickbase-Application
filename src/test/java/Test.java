@@ -14,7 +14,28 @@ public class Test {
         Exception exception = assertThrows(Exception.class, () -> {
             App.getGithubInfo("random_nonworking_token");
         });
-        String expectedMessage = "Invalid token";
+        String expectedMessage = "Invalid or unprovided token";
+        String actualMessage = exception.getMessage();
+        assertEquals(expectedMessage, actualMessage);
+    }
+
+    public void checkInvalidFreshdeskToken(){
+        Exception exception = assertThrows(Exception.class, ()-> {
+            Map<String, String> map = new HashMap<>();
+            map.put("email", "michaelbozhilov@gmail.com");
+            App.postFreshdeskInfo(null, map);
+        });
+        String expectedMessage = "Unprovided token";
+        String actualMessage = exception.getMessage();
+        assertEquals(expectedMessage, actualMessage);
+    }
+
+    public void providedDataDictionary(){
+        Exception exception = assertThrows(Exception.class, ()->{
+            Map<String, String> map = new HashMap<>();
+            App.postFreshdeskInfo("workingfreshdesk", map);
+        });
+        String expectedMessage = "At least an email, phone number ot twitter should be provided";
         String actualMessage = exception.getMessage();
         assertEquals(expectedMessage, actualMessage);
     }
