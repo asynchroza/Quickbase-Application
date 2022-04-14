@@ -72,15 +72,4 @@ abstract class APIRequest<T>{
         }
         return jsonObject;
     }
-
-    public static void checkInternetConnect(URL url) {
-
-        try {
-            URLConnection urlConnection = url.openConnection();
-            urlConnection.connect();
-        } catch (Exception e){
-            System.out.println("No Internet connection");
-            System.exit(0);
-        }
-    }
 }
