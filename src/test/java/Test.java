@@ -90,40 +90,7 @@ public class Test {
         assertEquals(expectedMessage, actualMessage);
     }
 
-    @org.junit.jupiter.api.Test
-    public void testFreshPostUserAlreadyCreated() throws Exception {
-        ByteArrayInputStream cin = new ByteArrayInputStream("devmisho".getBytes());
-        System.setIn(cin);
-        FreshdeskRequest fd_obj = new FreshdeskRequest(HelperMethods.buildMapElements(HelperMethods.githubContactInformation), System.getenv("FRESHDESK_TOKEN"));
-        int response_code = fd_obj.postRequest();
 
-        assertEquals(409, response_code);
-    }
-    @org.junit.jupiter.api.Test
-    public void testPutRequest() throws Exception {
-        HelperMethods.buildContactInformation();
-        ByteArrayInputStream cin = new ByteArrayInputStream("devmisho".getBytes());
-        System.setIn(cin);
-        FreshdeskRequest fd_obj = new FreshdeskRequest(HelperMethods.buildMapElements(HelperMethods.githubContactInformation), System.getenv("FRESHDESK_TOKEN"));
-        fd_obj.postRequest();
-        String result = fd_obj.putRequest();
-        assertEquals("Contact updated successfully", result);
-    }
-
-    @org.junit.jupiter.api.Test
-    public void testDoRequest() throws Exception {
-        HelperMethods.buildContactInformation();
-        ByteArrayInputStream cin = new ByteArrayInputStream("devmisho".getBytes());
-        System.setIn(cin);
-        FreshdeskRequest fd_obj = new FreshdeskRequest(HelperMethods.buildMapElements(HelperMethods.githubContactInformation), System.getenv("FRESHDESK_TOKEN"));
-        String result = fd_obj.doRequest();
-        boolean flag = false;
-        if(result.equals("There is no new data in order to update contact") || result.equals("Contact added successfully") ||
-        result.equals("Contact updated successfully")){
-            flag = true;
-        }
-        assertTrue(flag);
-    }
 
     // APP main
 //    @org.junit.jupiter.api.Test

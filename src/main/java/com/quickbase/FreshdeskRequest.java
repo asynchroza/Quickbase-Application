@@ -19,8 +19,6 @@ public class FreshdeskRequest extends APIRequest<JSONObject>{
     private final String inputAsk = "Please, enter the domain you wish to use: ";
     private String domain;
 
-    private final StringBuilder uri_req_address = new StringBuilder();
-
     private HttpResponse<String> response;
 
     private String id;
@@ -43,13 +41,12 @@ public class FreshdeskRequest extends APIRequest<JSONObject>{
     @Override
     public JSONObject getRequest() throws Exception {
 
-        uri_req_address.append("/").append(id); // Do not touch !
 
         HttpRequest request = HttpRequest.newBuilder()
                 .GET()
                 .header("Content-Type", "application/json")
                 .header("Authorization", "Basic " + Base64.getEncoder().encodeToString((this.api_token).getBytes())) // pass token for authorization
-                .uri(URI.create(uri_req_address.toString()))
+                .uri(URI.create("https://"+domain+api_endpoint+"/"+id))
                 .timeout(Duration.ofSeconds(5)) // timeout request after 5 seconds
                 .build();
 
@@ -70,15 +67,12 @@ public class FreshdeskRequest extends APIRequest<JSONObject>{
 
         if(domain.isEmpty()) throw new Exception("Empty subdomain");
 
-        String http_encode = "https://";
-
-        uri_req_address.append(http_encode).append(domain).append(this.api_endpoint);
 
         HttpRequest request = HttpRequest.newBuilder()
                 .POST(HttpRequest.BodyPublishers.ofString(contactInfo.toJSONString())) // pass the object in the body of request
                 .header("Content-Type", "application/json")
                 .header("Authorization", "Basic " + Base64.getEncoder().encodeToString((this.api_token).getBytes()))
-                .uri(URI.create(uri_req_address.toString()))
+                .uri(URI.create("https://"+domain+api_endpoint))
                 .timeout(Duration.ofSeconds(5))
                 .build();
 
@@ -97,21 +91,20 @@ public class FreshdeskRequest extends APIRequest<JSONObject>{
 
     public String putRequest() throws Exception {
 
-        StringBuilder uri_put_address = uri_req_address;
-        uri_put_address.append("/").append(id).toString();
+//        StringBuilder uri_put_address = uri_req_address;
+//        uri_put_address.append("/").append(id).toString();
         HttpRequest put_request = HttpRequest.newBuilder()
                 .PUT(HttpRequest.BodyPublishers.ofString(contactInfo.toJSONString()))
                 .header("Content-Type", "application/json")
                 .header("Authorization", "Basic " + Base64.getEncoder().encodeToString((this.api_token).getBytes()))
-                .uri(URI.create(uri_put_address.toString()))
+                .uri(URI.create("https://"+domain+api_endpoint+"/"+id))
                 .timeout(Duration.ofSeconds(5))
                 .build();
 
         response = client.send(put_request, HttpResponse.BodyHandlers.ofString());
         int response_code = response.statusCode();
-        System.out.println(uri_req_address);
         System.out.println(response.body());
-        if(response_code > 299) throw new Exception("Unknown error");
+        if(response_code > 299) throw new Exception(response.toString());
         return "Contact updated successfully";
     }
 
