@@ -5,9 +5,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import java.io.BufferedReader;
 import java.net.URI;
-import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
@@ -37,10 +35,10 @@ public class FreshdeskRequest extends APIRequest<JSONObject>{
         JSONObject addInfoObj = (JSONObject) addInfo.get("additional_info");
         return addInfoObj.get("user_id").toString();
     }
-
     @Override
     public JSONObject getRequest() throws Exception {
 
+        if(id == null || id.isEmpty())throw new Exception("Cannot invoke get request without user parameters");
 
         HttpRequest request = HttpRequest.newBuilder()
                 .GET()
@@ -49,13 +47,12 @@ public class FreshdeskRequest extends APIRequest<JSONObject>{
                 .uri(URI.create("https://"+domain+api_endpoint+"/"+id))
                 .timeout(Duration.ofSeconds(5)) // timeout request after 5 seconds
                 .build();
-
-
         response = client.send(request, HttpResponse.BodyHandlers.ofString()); // send the request synchronously
         int response_code = response.statusCode();
-
-        if(response_code>299) throw new Exception("RESPONSE CODE " + response_code);
-
+        if(response_code == 404) throw new Exception("Contact not found");
+        else if(response_code>=500) throw new Exception("Server side exception");
+        else if(response_code>=400) throw new Exception("Client side exception");
+        else if(response_code>299) throw new Exception("Additional action required to complete the request (Redirected) ");
         return (JSONObject) new JSONParser().parse(response.body());
     }
 
@@ -65,7 +62,7 @@ public class FreshdeskRequest extends APIRequest<JSONObject>{
 
         if(this.api_token == null) throw new Exception("Unprovided token");
 
-        if(domain.isEmpty()) throw new Exception("Empty subdomain");
+        if(domain == null || domain.isEmpty()) throw new Exception("Empty subdomain");
 
 
         HttpRequest request = HttpRequest.newBuilder()
@@ -84,15 +81,11 @@ public class FreshdeskRequest extends APIRequest<JSONObject>{
         else if(response_code > 400 && response_code < 500 && response_code != 409) throw new Exception("Client side error");
         else if(response_code > 500) throw new Exception("Server side error");
         if(response_code>300) this.id = parseUserID();
-
-        System.out.println(contactInfo.toString());
         return response_code;
     }
 
     public String putRequest() throws Exception {
 
-//        StringBuilder uri_put_address = uri_req_address;
-//        uri_put_address.append("/").append(id).toString();
         HttpRequest put_request = HttpRequest.newBuilder()
                 .PUT(HttpRequest.BodyPublishers.ofString(contactInfo.toJSONString()))
                 .header("Content-Type", "application/json")
@@ -103,7 +96,6 @@ public class FreshdeskRequest extends APIRequest<JSONObject>{
 
         response = client.send(put_request, HttpResponse.BodyHandlers.ofString());
         int response_code = response.statusCode();
-        System.out.println(response.body());
         if(response_code > 299) throw new Exception(response.toString());
         return "Contact updated successfully";
     }
@@ -111,21 +103,18 @@ public class FreshdeskRequest extends APIRequest<JSONObject>{
     public String doRequest() throws Exception {
 
         int post_request_response = postRequest();
-        String program_response = "";
-
+        String program_response;
         try{
             if(post_request_response < 300){
                 program_response = "Contact successfully added";
             } else {
                 JSONObject jsonObject = removeRedundantFields(getRequest(), true);
-
                 if(jsonObject.equals(removeRedundantFields(contactInfo, false))) return "There is no new data in order to update contact";
                 program_response = putRequest();
             }
         } catch (Exception e){
             return e.getMessage();
         }
-
         return program_response;
     }
 }

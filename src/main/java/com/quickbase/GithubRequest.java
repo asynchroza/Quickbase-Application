@@ -4,7 +4,6 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import java.net.URI;
-import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
@@ -36,13 +35,12 @@ public class GithubRequest extends APIRequest<JSONObject>{
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString()); // send the request synchronously
         int response_code = response.statusCode();
 
-//        System.out.println("GITHUB response: code - " + response_code + " and body: " + response.body());
 
         if(response_code>500) throw new Exception("Unable to reach GITHUB Servers");
         else if(response_code == 404) throw new Exception("No such user");
         else if(response_code>299) throw new Exception("Invalid or unprovided token"); // throw exception if sent information is incorrect
         JSONObject jsonObject = (JSONObject) new JSONParser().parse(response.body());
-        System.out.println(jsonObject);
+
         return (JSONObject) new JSONParser().parse(response.body());
     }
 }

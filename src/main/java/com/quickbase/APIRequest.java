@@ -26,14 +26,11 @@ abstract class APIRequest<T>{
     private static String[] viableFields = {"description", "address", "name"};
     private static String[] uniqueFields = {"email", "twitter_id"};
 
-//    public static Map<String, String> getGitToFreshFields() {
-//        return gitToFreshFields;
-//    }
 
     public String getData(String askDescription) throws Exception{
         System.out.println(askDescription);
         String input = scanner.nextLine();
-        if(input.contains(" ")) throw new Exception("Illegal username");
+        if(input.contains(" ")) throw new Exception("Illegal input");
         return input;
     };
 
