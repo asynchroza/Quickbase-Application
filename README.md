@@ -2,6 +2,7 @@
 <hr/>
 <p> To do: </p>
 <ul>
+  <li> Remove redundant get request </li>
   <li> Write new tests </li>
 </ul>
 <hr/>
