@@ -5,6 +5,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import java.io.BufferedReader;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -25,8 +26,8 @@ public class FreshdeskRequest extends APIRequest<JSONObject>{
     private String id;
 
     public
-    FreshdeskRequest(JSONObject contactInfo){
-        this.api_token = System.getenv("FRESHDESK_TOKEN");
+    FreshdeskRequest(JSONObject contactInfo, String api_token){
+        this.api_token = api_token;
         this.api_endpoint = ".freshdesk.com/api/v2/contacts";
         this.contactInfo = contactInfo;
     }
@@ -90,21 +91,26 @@ public class FreshdeskRequest extends APIRequest<JSONObject>{
         else if(response_code > 500) throw new Exception("Server side error");
         if(response_code>300) this.id = parseUserID();
 
+        System.out.println(contactInfo.toString());
         return response_code;
     }
 
     public String putRequest() throws Exception {
 
+        StringBuilder uri_put_address = uri_req_address;
+        uri_put_address.append("/").append(id).toString();
         HttpRequest put_request = HttpRequest.newBuilder()
                 .PUT(HttpRequest.BodyPublishers.ofString(contactInfo.toJSONString()))
                 .header("Content-Type", "application/json")
                 .header("Authorization", "Basic " + Base64.getEncoder().encodeToString((this.api_token).getBytes()))
-                .uri(URI.create(uri_req_address.toString()))
+                .uri(URI.create(uri_put_address.toString()))
                 .timeout(Duration.ofSeconds(5))
                 .build();
 
         response = client.send(put_request, HttpResponse.BodyHandlers.ofString());
         int response_code = response.statusCode();
+        System.out.println(uri_req_address);
+        System.out.println(response.body());
         if(response_code > 299) throw new Exception("Unknown error");
         return "Contact updated successfully";
     }

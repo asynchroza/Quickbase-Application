@@ -26,9 +26,9 @@ abstract class APIRequest<T>{
     private static String[] viableFields = {"description", "address", "name"};
     private static String[] uniqueFields = {"email", "twitter_id"};
 
-    public static Map<String, String> getGitToFreshFields() {
-        return gitToFreshFields;
-    }
+//    public static Map<String, String> getGitToFreshFields() {
+//        return gitToFreshFields;
+//    }
 
     public String getData(String askDescription) throws Exception{
         System.out.println(askDescription);
@@ -37,11 +37,11 @@ abstract class APIRequest<T>{
         return input;
     };
 
-    abstract public T getRequest() throws Exception; // do request
+     public abstract JSONObject getRequest() throws Exception; // do request
 
     public static JSONObject buildMapElements(JSONObject jsonObject){ // rebuild map elements , take json
         Map<String, String> finalized_json_fields = new HashMap<>();
-        getGitToFreshFields().forEach((k,v)->{
+        gitToFreshFields.forEach((k,v)->{
             if(jsonObject.get(k) != null){
                 finalized_json_fields.put(v, jsonObject.get(k).toString());
             }

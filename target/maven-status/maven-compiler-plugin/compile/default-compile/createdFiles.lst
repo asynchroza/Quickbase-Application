@@ -1,1 +1,5 @@
+com/quickbase/APIRequest$1.class
+com/quickbase/APIRequest.class
 com/quickbase/App.class
+com/quickbase/FreshdeskRequest.class
+com/quickbase/GithubRequest.class

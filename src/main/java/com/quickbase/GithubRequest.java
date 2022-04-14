@@ -15,9 +15,9 @@ public class GithubRequest extends APIRequest<JSONObject>{
     private String inputAsk = "Please, enter the Github username of the contact you wish to add: ";
 
     public
-    GithubRequest(){
+    GithubRequest(String api_token){
         this.api_endpoint = "https://api.github.com/users/";
-        this.api_token = System.getenv("GITHUB_TOKEN");
+        this.api_token = api_token;
     }
 
     @Override
@@ -41,7 +41,8 @@ public class GithubRequest extends APIRequest<JSONObject>{
         if(response_code>500) throw new Exception("Unable to reach GITHUB Servers");
         else if(response_code == 404) throw new Exception("No such user");
         else if(response_code>299) throw new Exception("Invalid or unprovided token"); // throw exception if sent information is incorrect
-
+        JSONObject jsonObject = (JSONObject) new JSONParser().parse(response.body());
+        System.out.println(jsonObject);
         return (JSONObject) new JSONParser().parse(response.body());
     }
 }
