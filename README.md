@@ -12,6 +12,6 @@
 <p> <strong> NB! </strong> Project is built to be run with <strong>JDK 11</strong> (Rolled back from JDK 17 for better compatibility with Maven versions) and <strong>Maven 3.6.3</strong></p>
 <p> Essentially, the easiest way to run the tests would be by using IntelliJ and the Lifecycle tasks found in the Maven option menu</p>
 <hr/>
-<p> Tests are made for the most basic edge cases which can be encountered during input and the running process of the program. This is because, in order to achieve more advanced tests, environmental variables should be passed as secrets and unpriviliged repository clones will fail them during building phases</p>
+ <li> Tests are made for the most basic edge cases which can be encountered during input and the running process of the program. This is because, in order to achieve more advanced tests, environmental variables should be passed as secrets and unpriviliged repository clones will fail them during building phases </li>
 <hr/>
 <p><strong> If you have any inquries feel free to email me! </strong></p>
