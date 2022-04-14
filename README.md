@@ -2,7 +2,8 @@
 <hr/>
 <p> To do: </p>
 <ul>
-  <li> Write new tests </li>
+  <li> Clean up </li>
+  <li> Fix test for main method </li>
 </ul>
 <hr/>
 <p> In order to run the program, you have to execute the <strong>QBApplication-Maven-1.0.SNAPSHOT-jar-with-dependencies.jar</strong> which could be found in the <strong>target</strong> directory. </p>
