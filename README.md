@@ -9,7 +9,7 @@
 
 <br/>
 
-<p> <strong> NB! </strong> Project is built to be run with <strong>JDK 11</strong> (Rolled back from JDK 17 for better compatibility with installed Maven versions) and <strong>Maven 3.6.3</strong></p>
+<p> <strong> NB! </strong> Project is built to be run with <strong>JDK 11</strong> (Rolled back from JDK 17 for better compatibility with Maven versions) and <strong>Maven 3.6.3</strong></p>
 <p> Essentially, the easiest way to run the tests would be by using IntelliJ and the Lifecycle tasks found in the Maven option menu</p>
 <hr/>
 <p><strong> If you have any inquries feel free to email me! </strong></p>
