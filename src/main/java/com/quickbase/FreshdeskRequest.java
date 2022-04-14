@@ -31,7 +31,7 @@ public class FreshdeskRequest extends APIRequest<JSONObject>{
         this.contactInfo = contactInfo;
     }
 
-    public String parseUserID(HttpResponse<String> response) throws ParseException {
+    public String parseUserID() throws ParseException {
         JSONObject jsonResponse = (JSONObject) new JSONParser().parse(response.body());
         JSONArray arrInJson = (JSONArray) jsonResponse.get("errors");
         JSONObject addInfo = (JSONObject) arrInJson.get(0);
@@ -41,7 +41,6 @@ public class FreshdeskRequest extends APIRequest<JSONObject>{
 
     @Override
     public JSONObject getRequest() throws Exception {
-//        System.out.println("ID is in the beginning of getReq " + id);
 
         uri_req_address.append("/").append(id); // Do not touch !
 
@@ -56,9 +55,9 @@ public class FreshdeskRequest extends APIRequest<JSONObject>{
 
         response = client.send(request, HttpResponse.BodyHandlers.ofString()); // send the request synchronously
         int response_code = response.statusCode();
-//        System.out.println(response.toString());
+
         if(response_code>299) throw new Exception("RESPONSE CODE " + response_code);
-//        System.out.println(new JSONParser().parse(response.body()).toString());
+
         return (JSONObject) new JSONParser().parse(response.body());
     }
 
@@ -66,7 +65,6 @@ public class FreshdeskRequest extends APIRequest<JSONObject>{
 
         this.domain = getData(inputAsk);
 
-//        System.out.println("contact info: " + contactInfo.toString());
         if(this.api_token == null) throw new Exception("Unprovided token");
 
         if(domain.isEmpty()) throw new Exception("Empty subdomain");
@@ -74,7 +72,6 @@ public class FreshdeskRequest extends APIRequest<JSONObject>{
         String http_encode = "https://";
 
         uri_req_address.append(http_encode).append(domain).append(this.api_endpoint);
-
 
         HttpRequest request = HttpRequest.newBuilder()
                 .POST(HttpRequest.BodyPublishers.ofString(contactInfo.toJSONString())) // pass the object in the body of request
@@ -91,14 +88,12 @@ public class FreshdeskRequest extends APIRequest<JSONObject>{
         else if(response_code == 401) throw new Exception("Unauthorized access to subdomain");
         else if(response_code > 400 && response_code < 500 && response_code != 409) throw new Exception("Client side error");
         else if(response_code > 500) throw new Exception("Server side error");
-        if(response_code>300) this.id = parseUserID(response);
+        if(response_code>300) this.id = parseUserID();
 
         return response_code;
     }
 
-    public String putRequest(HttpResponse<String> response, HttpClient client) throws Exception {
-
-//        this.id = parseUserID(response);
+    public String putRequest() throws Exception {
 
         HttpRequest put_request = HttpRequest.newBuilder()
                 .PUT(HttpRequest.BodyPublishers.ofString(contactInfo.toJSONString()))
@@ -110,24 +105,23 @@ public class FreshdeskRequest extends APIRequest<JSONObject>{
 
         response = client.send(put_request, HttpResponse.BodyHandlers.ofString());
         int response_code = response.statusCode();
-//        System.out.println("Put request response code = " + response_code);
         if(response_code > 299) throw new Exception("Unknown error");
         return "Contact updated successfully";
     }
 
     public String doRequest() throws Exception {
+
         int post_request_response = postRequest();
         String program_response = "";
+
         try{
             if(post_request_response < 300){
-                program_response = "Contact is successfully created";
+                program_response = "Contact successfully added";
             } else {
                 JSONObject jsonObject = removeRedundantFields(getRequest(), true);
-//                System.out.println(jsonObject.toString());
-//                System.out.println(removeRedundantFields(contactInfo, false).toString());
 
                 if(jsonObject.equals(removeRedundantFields(contactInfo, false))) return "There is no new data in order to update contact";
-                program_response = putRequest(this.response, client);
+                program_response = putRequest();
             }
         } catch (Exception e){
             return e.getMessage();
