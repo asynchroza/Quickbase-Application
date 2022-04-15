@@ -8,10 +8,9 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 
-public class GithubRequest extends APIRequest<JSONObject>{
+public class GithubRequest extends APIRequest {
 
     private String githubContact;
-    private String inputAsk = "Please, enter the Github username of the contact you wish to add: ";
 
     public
     GithubRequest(String api_token){
@@ -22,7 +21,8 @@ public class GithubRequest extends APIRequest<JSONObject>{
     @Override
     public JSONObject getRequest() throws Exception {
 
-        this.githubContact = getData(inputAsk);
+        String inputAsk = "Please, enter the Github username of the contact you wish to add: ";
+        this.githubContact = getData(inputAsk); // get user input
 
         HttpRequest request = HttpRequest.newBuilder()
                 .GET()
@@ -36,8 +36,8 @@ public class GithubRequest extends APIRequest<JSONObject>{
         int response_code = response.statusCode();
 
 
-        if(response_code>500) throw new Exception("Unable to reach GITHUB Servers");
-        else if(response_code == 404) throw new Exception("No such user");
+        if(response_code>499) throw new Exception("Github server side error"); // server side error
+        else if(response_code == 404) throw new Exception("No such user"); // user not found
         else if(response_code>299) throw new Exception("Invalid or unprovided token"); // throw exception if sent information is incorrect
         JSONObject jsonObject = (JSONObject) new JSONParser().parse(response.body());
 

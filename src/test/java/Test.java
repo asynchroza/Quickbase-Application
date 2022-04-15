@@ -133,6 +133,7 @@ public class Test {
         testIncorrectDomain("dev!misho", "unsupported URI https://dev!misho.freshdesk.com/api/v2/contacts");
     }
 
+    // getRequest exception when invoked without postRequest
     @org.junit.jupiter.api.Test
     public void getRequest(){
         Exception exception = assertThrows(Exception.class, ()-> {

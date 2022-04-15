@@ -11,10 +11,9 @@ import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.util.Base64;
 
-public class FreshdeskRequest extends APIRequest<JSONObject>{
+public class FreshdeskRequest extends APIRequest {
 
     private final JSONObject contactInfo;
-    private final String inputAsk = "Please, enter the domain you wish to use: ";
     private String domain;
 
     private HttpResponse<String> response;
@@ -28,7 +27,7 @@ public class FreshdeskRequest extends APIRequest<JSONObject>{
         this.contactInfo = contactInfo;
     }
 
-    public String parseUserID() throws ParseException {
+    public String parseUserID() throws ParseException { // get Freshdesk contact id from request response
         JSONObject jsonResponse = (JSONObject) new JSONParser().parse(response.body());
         JSONArray arrInJson = (JSONArray) jsonResponse.get("errors");
         JSONObject addInfo = (JSONObject) arrInJson.get(0);
@@ -36,18 +35,18 @@ public class FreshdeskRequest extends APIRequest<JSONObject>{
         return addInfoObj.get("user_id").toString();
     }
     @Override
-    public JSONObject getRequest() throws Exception {
+    public JSONObject getRequest() throws Exception { // get user contact information
 
-        if(id == null || id.isEmpty())throw new Exception("Cannot invoke get request without user parameters");
+        if(id == null || id.isEmpty()) throw new Exception("Cannot invoke get request without user parameters");
 
         HttpRequest request = HttpRequest.newBuilder()
                 .GET()
                 .header("Content-Type", "application/json")
                 .header("Authorization", "Basic " + Base64.getEncoder().encodeToString((this.api_token).getBytes())) // pass token for authorization
                 .uri(URI.create("https://"+domain+api_endpoint+"/"+id))
-                .timeout(Duration.ofSeconds(5)) // timeout request after 5 seconds
+                .timeout(Duration.ofSeconds(5))
                 .build();
-        response = client.send(request, HttpResponse.BodyHandlers.ofString()); // send the request synchronously
+        response = client.send(request, HttpResponse.BodyHandlers.ofString());
         int response_code = response.statusCode();
         if(response_code == 404) throw new Exception("Contact not found");
         else if(response_code>=500) throw new Exception("Server side exception");
@@ -58,6 +57,7 @@ public class FreshdeskRequest extends APIRequest<JSONObject>{
 
     public Integer postRequest() throws Exception {
 
+        String inputAsk = "Please, enter the domain you wish to use: ";
         this.domain = getData(inputAsk);
 
         if(this.api_token == null) throw new Exception("Unprovided token");
@@ -73,13 +73,13 @@ public class FreshdeskRequest extends APIRequest<JSONObject>{
                 .timeout(Duration.ofSeconds(5))
                 .build();
 
-        response = client.send(request, HttpResponse.BodyHandlers.ofString()); // send the request synchronously
+        response = client.send(request, HttpResponse.BodyHandlers.ofString());
         int response_code = response.statusCode();
         if(response_code == 400) throw new Exception("At least an email or twitter id should be provided");
         else if(response_code == 404) throw new Exception("Subdomain not found");
         else if(response_code == 401) throw new Exception("Unauthorized access to subdomain");
-        else if(response_code > 400 && response_code < 500 && response_code != 409) throw new Exception("Client side error");
-        else if(response_code > 500) throw new Exception("Server side error");
+        else if(response_code > 499) throw new Exception("Server side error");
+        else if(response_code > 399 && response_code != 409) throw new Exception("Client side error");
         if(response_code>300) this.id = parseUserID();
         return response_code;
     }
